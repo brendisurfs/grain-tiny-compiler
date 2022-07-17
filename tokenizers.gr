@@ -1,0 +1,87 @@
+import Token from "./Token"
+import String from "string"
+import Stack from "stack"
+import Array from "array"
+import Regex from "regex"
+import Result from "result"
+import List from "list"
+
+let myStr = "(add 2 4)"
+
+enum Char {
+  SPC,
+  NOP,
+  O_PAREN(String),
+  C_PAREN(String),
+  CHAR(String),
+  NUM(String),
+}
+
+record Token {
+  name: String,
+  value: String,
+}
+
+let tokenizer = input => {
+  let mut tokens = List.init(String.length(input), n => SPC)
+  let mut current = 0
+
+  while (current < String.length(input)) {
+    let splitStr = String.split("", input)
+    let mut char = Array.get(current, splitStr)
+
+    let letterRe = Result.unwrap(Regex.make("[a-z]"))
+    let numberRe = Result.unwrap(Regex.make("[0-9]"))
+    let parenRe = Result.unwrap(Regex.make("[()]"))
+
+    match (true) {
+      true when char == " " => {
+        current += 1
+        continue
+      },
+      // match on parens
+      true when Regex.isMatch(parenRe, char) => {
+        let returnParen = match (char) {
+          "(" => O_PAREN(char),
+          ")" => C_PAREN(char),
+          _ => NOP,
+        }
+
+        tokens = List.insert(returnParen, current, tokens)
+        print("paren: " ++ toString(tokens))
+        current += 1
+        continue
+      },
+      // match on letters
+      true when Regex.isMatch(letterRe, char) => {
+        let mut value = ""
+        while (Regex.isMatch(letterRe, char)) {
+          value = String.concat(value, char)
+
+          current += 1
+          char = Array.get(current, splitStr)
+        }
+        print("char: " ++ value)
+        current += 1
+        continue
+      },
+      true when Regex.isMatch(numberRe, char) => {
+        let mut value = ""
+        while (Regex.isMatch(numberRe, char)) {
+          value = String.concat(value, char)
+          current += 1
+          char = Array.get(current, splitStr)
+        }
+        print(value)
+      },
+      _ => {
+        print("done")
+        break
+      },
+    }
+  }
+  tokens
+}
+
+let tokenList = tokenizer(myStr)
+print(tokenList)

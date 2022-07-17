@@ -1,0 +1,38 @@
+import String from "string"
+import Array from "array"
+let mut source = ""
+let mut currentChar = ""
+let mut currentPos = -1
+let init = input => {
+  source = input
+  print("not impl")
+}
+
+let nextChar = () => {
+  currentPos += 1
+  if (currentPos >= String.length(source)) {
+    ""
+  } else {
+    currentChar = Array.get(currentPos, String.split("", source))
+    currentChar
+  }
+  print("not impl")
+}
+
+let abort = () => {
+  print("not impl")
+}
+
+let skipWhitespace = () => {
+  print("not impl")
+}
+
+let skipComment = () => {
+  print("not impl")
+}
+
+let getToken = () => {
+  print("not impl")
+}
+
+export *
