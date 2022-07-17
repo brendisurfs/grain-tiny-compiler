@@ -1,6 +1,5 @@
 import Process from "sys/process"
 import Result from "result"
-import Token from "./Token"
 import String from "string"
 import Regex from "regex"
 import Stack from "stack"
@@ -21,6 +20,7 @@ export let tokenizer = input => {
     let numberRe = Result.unwrap(Regex.make("[0-9]"))
 
     match (true) {
+      // match on spaces
       true when char == " " => {
         current += 1
         continue
@@ -50,6 +50,7 @@ export let tokenizer = input => {
         current += 1
         continue
       },
+      // match on numbers
       true when Regex.isMatch(numberRe, char) => {
         let mut value = ""
         while (Regex.isMatch(numberRe, char)) {
@@ -61,6 +62,7 @@ export let tokenizer = input => {
         current += 1
         continue
       },
+      // if not match, err
       _ => {
         print("could not find char: " ++ char)
         Process.exit(0)
@@ -68,6 +70,7 @@ export let tokenizer = input => {
       },
     }
   }
+  // since we filled that list with SPC, need to get rid of it.
   let newList = List.filter(t => t != SPC, tokens)
   newList
 }

@@ -11,7 +11,7 @@ enum NodeType {
 record Node {
   nodeType: NodeType,
   name: String,
-  params: Array<Node>,
+  params: Array<String>,
 }
 
 export let parser = tks => {
