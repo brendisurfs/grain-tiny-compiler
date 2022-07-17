@@ -5,12 +5,26 @@ import Regex from "regex"
 import Stack from "stack"
 import Array from "array"
 import List from "list"
-import { O_PAREN, C_PAREN, SPC, NOP, NUM, CHAR } from "./Types"
 
-export let tokenizer = input => {
+enum Char {
+  SPC,
+  NOP,
+  O_PAREN,
+  C_PAREN,
+  CHAR,
+  NUM,
+}
+
+record Token {
+  tokenType: Char,
+  value: String,
+}
+
+export let tokenizer = (input: String) => {
   let mut current = 0
   // make list with the SPC Char.
-  let mut tokens = List.init(String.length(input), n => SPC)
+  let mut tokens = List.init(String.length(input), n =>
+    { tokenType: SPC, value: "" })
 
   while (current < String.length(input)) {
     let splitStr = String.split("", input)
@@ -27,12 +41,20 @@ export let tokenizer = input => {
       },
       // match on parens
       true when char == "(" => {
-        tokens = List.insert(O_PAREN(char), current, tokens)
+        tokens = List.insert(
+          { tokenType: O_PAREN, value: char },
+          current,
+          tokens
+        )
         current += 1
         continue
       },
       true when char == ")" => {
-        tokens = List.insert(C_PAREN(char), current, tokens)
+        tokens = List.insert(
+          { tokenType: C_PAREN, value: char },
+          current,
+          tokens
+        )
         current += 1
         continue
       },
@@ -46,7 +68,7 @@ export let tokenizer = input => {
           char = Array.get(current, splitStr)
         }
         // insert into space and re-assign.
-        tokens = List.insert(CHAR(value), current, tokens)
+        tokens = List.insert({ tokenType: CHAR, value }, current, tokens)
         current += 1
         continue
       },
@@ -58,7 +80,7 @@ export let tokenizer = input => {
           current += 1
           char = Array.get(current, splitStr)
         }
-        tokens = List.insert(NUM(value), current, tokens)
+        tokens = List.insert({ tokenType: NUM, value }, current, tokens)
         current += 1
         continue
       },
@@ -71,6 +93,53 @@ export let tokenizer = input => {
     }
   }
   // since we filled that list with SPC, need to get rid of it.
-  let newList = List.filter(t => t != SPC, tokens)
+  let newList = List.filter(t => t.tokenType != SPC, tokens)
   newList
+}
+
+// -- BUG: bringing parser in here.
+export enum NodeType {
+  FunctionCall,
+  NumberLiteral,
+  CallExpression,
+}
+
+export record Node {
+  nodeType: NodeType,
+  name: String,
+  params: List<Node>,
+}
+
+export let parseTokens = tks => {
+  let mut current = 0
+  let internalArray = Array.fromList(tks)
+
+  let rec walk = () => {
+    let mut token = internalArray[current]
+    match (token.tokenType) {
+      O_PAREN => {
+        current += 1
+        token = internalArray[current]
+        let node = { nodeType: CallExpression, name: token.value, params: [] }
+        // incr again
+        current += 1
+        token = internalArray[current]
+        print(node)
+      },
+      C_PAREN => {
+        print("c paren")
+      },
+      CHAR => {
+        print(token.value)
+      },
+      NUM => {
+        print(token.value)
+      },
+      _ => {
+        Process.exit(1)
+        print("done")
+      },
+    }
+  }
+  walk()
 }
