@@ -1,6 +1,5 @@
-import { tokenizer, parseTokens } from "./tokenizers"
+import { tokenizer } from "./tokenizers"
 let myStr = "( add 2 4 )"
 
 let tokens = tokenizer(myStr)
-
-parseTokens(tokens)
+print(tokens)

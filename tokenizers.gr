@@ -113,7 +113,7 @@ record NodeLiteral {
 export record Node {
   nodeType: NodeType,
   name: String,
-  mut params: List<NodeLiteral>,
+  mut params: Array<NodeLiteral>,
 }
 
 enum WalkReturn {
@@ -121,46 +121,52 @@ enum WalkReturn {
   NodeLiteral(NodeLiteral),
 }
 
-export let parseTokens = tks => {
-  let mut current = 0
-  let internalArray = Array.fromList(tks)
+/* export let parseTokens = tks => { */
+/*   let mut current = 0 */
+/*   let internalArray = Array.fromList(tks) */
+/**/
+/*   let rec walk = () => { */
 
-  let rec walk = () => {
-    let mut token = internalArray[current]
-    print(token)
+/*     let mut token = internalArray[current] */
+/*     print(token) */
+/**/
+/*     let rec walk = () => { */
 
-    let rec walk = () => {
-      let mut current = 0
-      let mut token = internalArray[current]
+/*       let mut current = 0 */
+/*       let mut token = internalArray[current] */
+/**/
+/*       if (token.tokenType == NUM) { */
 
-      if (token.tokenType == NUM) {
-        current += 1
-        NodeLiteral({ litType: NumberLiteral, value: token.value })
-      } else if (token.tokenType == CHAR) {
-        current += 1
-        NodeLiteral({ litType: StringLiteral, value: token.value })
-      } else if (token.tokenType == O_PAREN || token.tokenType == C_PAREN) {
-        current += 1
-        token = internalArray[current]
+/*         current += 1 */
+/*         NodeLiteral({ litType: NumberLiteral, value: token.value }) */
+/*       } else if (token.tokenType == CHAR) { */
+/*         current += 1 */
+/*         NodeLiteral({ litType: StringLiteral, value: token.value }) */
+/*       } else if (token.tokenType == O_PAREN || token.tokenType == C_PAREN) { */
+/*         current += 1 */
+/*         token = internalArray[current] */
+/**/
+/*         let mut node = { */
 
-        let mut node = {
-          nodeType: CallExpression,
-          name: token.value,
-          params: [],
-        }
+/*           nodeType: CallExpression, */
+/*           name: token.value, */
+/*           params: [], */
+/*         } */
+/**/
+/*         current += 1 */
 
-        current += 1
-        token = internalArray[current]
+/*         token = internalArray[current] */
+/**/
+/*         while (token.tokenType != O_PAREN && token.tokenType != C_PAREN) { */
 
-        while (token.tokenType != O_PAREN && token.tokenType != C_PAREN) {
-          print(node)
-          // FIXME: this is going to be weird to figure out.
-          node.params = List.insert(walk(), current, node.params)
-        }
-        Node(node)
-      } else {
-        NodeLiteral({ litType: StringLiteral, value: "" })
-      }
-    }
-  }
-}
+/*           print(node) */
+/*           // FIXME: this is going to be weird to figure out. */
+/*           node.params = List.insert(walk(), current, node.params) */
+/*         } */
+/*         Node(node) */
+/*       } else { */
+/*         NodeLiteral({ litType: StringLiteral, value: "" }) */
+/*       } */
+/*     } */
+/*   } */
+/* } */
