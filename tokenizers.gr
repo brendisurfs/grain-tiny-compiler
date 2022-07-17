@@ -1,30 +1,17 @@
+import Process from "sys/process"
+import Result from "result"
 import Token from "./Token"
 import String from "string"
+import Regex from "regex"
 import Stack from "stack"
 import Array from "array"
-import Regex from "regex"
-import Result from "result"
 import List from "list"
+import { O_PAREN, C_PAREN, SPC, NOP, NUM, CHAR } from "./Types"
 
-let myStr = "(add 2 4)"
-
-enum Char {
-  SPC,
-  NOP,
-  O_PAREN(String),
-  C_PAREN(String),
-  CHAR(String),
-  NUM(String),
-}
-
-record Token {
-  name: String,
-  value: String,
-}
-
-let tokenizer = input => {
-  let mut tokens = List.init(String.length(input), n => SPC)
+export let tokenizer = input => {
   let mut current = 0
+  // make list with the SPC Char.
+  let mut tokens = List.init(String.length(input), n => SPC)
 
   while (current < String.length(input)) {
     let splitStr = String.split("", input)
@@ -39,14 +26,13 @@ let tokenizer = input => {
         continue
       },
       // match on parens
-      true when char == ")" || char == "(" => {
-        let returnParen = match (char) {
-          "(" => O_PAREN(char),
-          ")" => C_PAREN(char),
-          _ => NOP,
-        }
-
-        tokens = List.insert(returnParen, current, tokens)
+      true when char == "(" => {
+        tokens = List.insert(O_PAREN(char), current, tokens)
+        current += 1
+        continue
+      },
+      true when char == ")" => {
+        tokens = List.insert(C_PAREN(char), current, tokens)
         current += 1
         continue
       },
@@ -76,13 +62,12 @@ let tokenizer = input => {
         continue
       },
       _ => {
-        print("done")
+        print("could not find char: " ++ char)
+        Process.exit(0)
         break
       },
     }
   }
-  tokens
+  let newList = List.filter(t => t != SPC, tokens)
+  newList
 }
-
-let tokenList = tokenizer(myStr)
-print(tokenList)
