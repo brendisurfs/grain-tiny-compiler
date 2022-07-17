@@ -32,7 +32,6 @@ let tokenizer = input => {
 
     let letterRe = Result.unwrap(Regex.make("[a-z]"))
     let numberRe = Result.unwrap(Regex.make("[0-9]"))
-    let parenRe = Result.unwrap(Regex.make("[()]"))
 
     match (true) {
       true when char == " " => {
@@ -40,7 +39,7 @@ let tokenizer = input => {
         continue
       },
       // match on parens
-      true when Regex.isMatch(parenRe, char) => {
+      true when char == ")" || char == "(" => {
         let returnParen = match (char) {
           "(" => O_PAREN(char),
           ")" => C_PAREN(char),
@@ -48,7 +47,6 @@ let tokenizer = input => {
         }
 
         tokens = List.insert(returnParen, current, tokens)
-        print("paren: " ++ toString(tokens))
         current += 1
         continue
       },
@@ -61,7 +59,8 @@ let tokenizer = input => {
           current += 1
           char = Array.get(current, splitStr)
         }
-        print("char: " ++ value)
+        // insert into space and re-assign.
+        tokens = List.insert(CHAR(value), current, tokens)
         current += 1
         continue
       },
@@ -72,7 +71,9 @@ let tokenizer = input => {
           current += 1
           char = Array.get(current, splitStr)
         }
-        print(value)
+        tokens = List.insert(NUM(value), current, tokens)
+        current += 1
+        continue
       },
       _ => {
         print("done")
