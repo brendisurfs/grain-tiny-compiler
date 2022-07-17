@@ -101,13 +101,24 @@ export let tokenizer = (input: String) => {
 export enum NodeType {
   FunctionCall,
   NumberLiteral,
+  StringLiteral,
   CallExpression,
+}
+
+record NodeLiteral {
+  litType: NodeType,
+  value: String,
 }
 
 export record Node {
   nodeType: NodeType,
   name: String,
-  params: List<Node>,
+  mut params: List<NodeLiteral>,
+}
+
+enum WalkReturn {
+  Node(Node),
+  NodeLiteral(NodeLiteral),
 }
 
 export let parseTokens = tks => {
@@ -116,30 +127,40 @@ export let parseTokens = tks => {
 
   let rec walk = () => {
     let mut token = internalArray[current]
-    match (token.tokenType) {
-      O_PAREN => {
+    print(token)
+
+    let rec walk = () => {
+      let mut current = 0
+      let mut token = internalArray[current]
+
+      if (token.tokenType == NUM) {
+        current += 1
+        NodeLiteral({ litType: NumberLiteral, value: token.value })
+      } else if (token.tokenType == CHAR) {
+        current += 1
+        NodeLiteral({ litType: StringLiteral, value: token.value })
+      } else if (token.tokenType == O_PAREN || token.tokenType == C_PAREN) {
         current += 1
         token = internalArray[current]
-        let node = { nodeType: CallExpression, name: token.value, params: [] }
-        // incr again
+
+        let mut node = {
+          nodeType: CallExpression,
+          name: token.value,
+          params: [],
+        }
+
         current += 1
         token = internalArray[current]
-        print(node)
-      },
-      C_PAREN => {
-        print("c paren")
-      },
-      CHAR => {
-        print(token.value)
-      },
-      NUM => {
-        print(token.value)
-      },
-      _ => {
-        Process.exit(1)
-        print("done")
-      },
+
+        while (token.tokenType != O_PAREN && token.tokenType != C_PAREN) {
+          print(node)
+          // FIXME: this is going to be weird to figure out.
+          node.params = List.insert(walk(), current, node.params)
+        }
+        Node(node)
+      } else {
+        NodeLiteral({ litType: StringLiteral, value: "" })
+      }
     }
   }
-  walk()
 }

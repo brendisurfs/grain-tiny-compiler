@@ -3,6 +3,4 @@ let myStr = "( add 2 4 )"
 
 let tokens = tokenizer(myStr)
 
-let nodes = parseTokens(tokens)
-
-print(tokens)
+parseTokens(tokens)
