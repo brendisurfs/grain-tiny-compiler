@@ -1,0 +1,6 @@
+import { tokenizer } from "./tokenizers"
+let myStr = "( add 2 4 )"
+
+let tokens = tokenizer(myStr)
+
+print(tokens)

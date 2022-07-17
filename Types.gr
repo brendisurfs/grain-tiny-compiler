@@ -1,0 +1,13 @@
+export enum Char {
+  SPC,
+  NOP,
+  O_PAREN(String),
+  C_PAREN(String),
+  CHAR(String),
+  NUM(String),
+}
+
+export record Token {
+  name: String,
+  value: String,
+}

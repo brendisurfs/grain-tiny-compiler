@@ -1,0 +1,26 @@
+import { O_PAREN, C_PAREN, SPC, NOP, NUM, CHAR } from "./Types"
+import Array from "array"
+
+enum NodeType {
+  CallExpression,
+  NumberLiteral,
+  FunctionCall,
+}
+
+// Node - the record type for a node in the AST.
+record Node {
+  nodeType: NodeType,
+  name: String,
+  params: Array<Node>,
+}
+
+export let parser = tks => {
+  let mut current = 0
+  let internalArray = Array.fromList(tks)
+
+  let rec walk = () => {
+    let mut token = internalArray[current]
+    print(token)
+  }
+  walk()
+}
