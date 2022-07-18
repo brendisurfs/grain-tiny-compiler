@@ -87,7 +87,7 @@ export let tokenizer = (input: String) => {
       // if not match, err
       _ => {
         print("could not find char: " ++ char)
-        Process.exit(0)
+        Process.exit(1)
         break
       },
     }
@@ -97,7 +97,7 @@ export let tokenizer = (input: String) => {
   newList
 }
 
-// -- BUG: bringing parser in here.
+// -- BUG: bringing parser in here, cyclical dep issue anywhere else.
 export enum NodeType {
   Program,
   FunctionCall,
