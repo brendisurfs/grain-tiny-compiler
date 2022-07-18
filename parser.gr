@@ -1,22 +1,24 @@
 import Array from "array"
 import { O_PAREN, C_PAREN, SPC, NOP, NUM, CHAR } from "./Types"
-export enum NodeType {
+enum NodeType {
   FunctionCall,
   NumberLiteral,
   CallExpression,
 }
 
 // Node - the record type for a node in the AST.
-export record Node {
+record Node {
   name: String,
   nodeType: NodeType,
   params: Array<Node>,
 }
 
-export let parseTokens = tks => {
+let parseTokens = tks => {
   let mut current = 0
   let internalArray = Array.fromList(tks)
 
   let mut token = internalArray[current]
   print(token)
 }
+
+export *
