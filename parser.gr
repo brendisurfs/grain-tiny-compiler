@@ -1,10 +1,5 @@
-import Array from "array"
 import { O_PAREN, C_PAREN, SPC, NOP, NUM, CHAR } from "./Types"
-enum NodeType {
-  FunctionCall,
-  NumberLiteral,
-  CallExpression,
-}
+import Array from "array"
 
 // Node - the record type for a node in the AST.
 let parseTokens = tks => {
